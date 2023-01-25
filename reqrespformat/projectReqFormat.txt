@@ -1,0 +1,22 @@
+1. uri: /create/project
+	request
+	{
+		"projectName": "zzz",
+		"projectDesc": "latest project",
+		"assignedFor": "Sadhana",
+		"createdBy": "Princy"
+	}
+2. uri: /assign/project
+	request
+	{
+		"projectName": "zzz",
+		"assignedFor":"Sadhana",
+		"teamMembers": [
+			{
+				"username": "Sugandhi"
+			},
+			{
+				"username": "Rajesh"
+			}
+		]
+	}

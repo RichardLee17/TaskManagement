@@ -1,0 +1,121 @@
+URL: http://localhost:8082/create/task [POST]
+
+request:
+{
+    "projectName": "zzz",
+    "taskList": [
+        {
+            "taskDescription": "Update Timesheet",
+            "taskCategory": "Mercury Timesheet",
+            "assignedTo": "Sugandhi",
+            "assignedBy": "Sadhana",
+            "status": "New",
+            "activeInd": "Active",
+            "filePath": null,
+            "priority": "high",
+            "frequency": "Weekly",
+            "loggedDate": "2023-01-11T12:25:10.813+00:00",
+            "dueDate": "2023-01-18T12:25:10.813+00:00"
+        },
+        {
+            "taskDescription": "Update Timesheet",
+            "taskCategory": "Mercury Timesheet",
+            "assignedTo": "Rajesh",
+            "assignedBy": "Sadhana",
+            "status": "New",
+            "activeInd": "Active",
+            "filePath": null,
+            "priority": "high",
+            "frequency": "Weekly",
+            "loggedDate": "2023-01-11T12:25:10.813+00:00",
+            "dueDate": "2023-01-18T12:25:10.813+00:00"
+        }
+        ,
+        {
+            "taskDescription": "Update Timesheet",
+            "taskCategory": "Mercury Timesheet",
+            "assignedTo": "Richard",
+            "assignedBy": "Sadhana",
+            "status": "New",
+            "activeInd": "Active",
+            "filePath": null,
+            "priority": "high",
+            "frequency": "Weekly",
+            "loggedDate": "2023-01-11T12:25:10.813+00:00",
+            "dueDate": "2023-01-18T12:25:10.813+00:00"
+        },
+        {
+            "taskDescription": "Update Timesheet",
+            "taskCategory": "Mercury Timesheet",
+            "assignedTo": "Ram",
+            "assignedBy": "Sadhana",
+            "status": "New",
+            "activeInd": "Active",
+            "filePath": null,
+            "priority": "high",
+            "frequency": "Weekly",
+            "loggedDate": "2023-01-11T12:25:10.813+00:00",
+            "dueDate": "2023-01-18T12:25:10.813+00:00"
+        }
+    ]
+}
+
+response
+[
+    {
+        "taskDescription": "Update Timesheet",
+        "taskCategory": "Mercury Timesheet",
+        "assignedTo": "Sugandhi",
+        "assignedBy": "Sadhana",
+        "status": "New",
+        "activeInd": "Active",
+        "filePath": null,
+        "priority": "high",
+        "frequency": "Weekly",
+        "loggedDate": "2023-01-11T12:25:10",
+        "dueDate": "2023-01-18T12:25:10",
+        "remarks": null
+    },
+    {
+        "taskDescription": "Update Timesheet",
+        "taskCategory": "Mercury Timesheet",
+        "assignedTo": "Rajesh",
+        "assignedBy": "Sadhana",
+        "status": "New",
+        "activeInd": "Active",
+        "filePath": null,
+        "priority": "high",
+        "frequency": "Weekly",
+        "loggedDate": "2023-01-11T12:25:10",
+        "dueDate": "2023-01-18T12:25:10",
+        "remarks": null
+    },
+    {
+        "taskDescription": "Update Timesheet",
+        "taskCategory": "Mercury Timesheet",
+        "assignedTo": "Richard",
+        "assignedBy": "Sadhana",
+        "status": "New",
+        "activeInd": "Active",
+        "filePath": null,
+        "priority": "high",
+        "frequency": "Weekly",
+        "loggedDate": "2023-01-11T12:25:10",
+        "dueDate": "2023-01-18T12:25:10",
+        "remarks": null
+    },
+    {
+        "taskDescription": "Update Timesheet",
+        "taskCategory": "Mercury Timesheet",
+        "assignedTo": "Ram",
+        "assignedBy": "Sadhana",
+        "status": "New",
+        "activeInd": "Active",
+        "filePath": null,
+        "priority": "high",
+        "frequency": "Weekly",
+        "loggedDate": "2023-01-11T12:25:10",
+        "dueDate": "2023-01-18T12:25:10",
+        "remarks": null
+    }
+]

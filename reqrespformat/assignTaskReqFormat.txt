@@ -1,0 +1,35 @@
+URL: http://localhost:8082/assign/task [POST]
+
+request:
+{
+    "projectName": "zzz",
+    "taskList": [
+        {
+            "taskDescription": "Update Timesheet",
+            "taskCategory": "Mercury Timesheet",
+            "assignedToOld": "Sugandhi",
+            "assignedToNew": "Ram",
+            "assignedBy": "Sadhana"
+        }
+    ]
+}
+
+response:
+[
+    {
+        "taskDescription": "Update Timesheet",
+        "taskCategory": "Mercury Timesheet",
+        "assignedToOld": null,
+        "assignedToNew": null,
+        "assignedTo": "Ram",
+        "assignedBy": "Sadhana",
+        "status": "New",
+        "activeInd": "Active",
+        "filePath": null,
+        "priority": "high",
+        "frequency": "Weekly",
+        "loggedDate": "2023-01-10T18:30:00",
+        "dueDate": "2023-01-17T18:30:00",
+        "remarks": null
+    }
+]
