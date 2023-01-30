@@ -1,9 +1,10 @@
 package com.bau.taskportal.util.task;
 
 import com.bau.taskportal.bean.task.TaskDetails;
+import com.bau.taskportal.constant.TaskConstants;
 import com.bau.taskportal.entity.Task;
 import com.bau.taskportal.repository.TaskRepository;
-import com.bau.taskportal.repository.UserRepository;
+import com.bau.taskportal.util.user.UserUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,36 +12,27 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class TaskUtilService {
 
     @Autowired
-    private TaskRepository taskRepository;
-
+    UserUtilService userUtilService;
     @Autowired
-    private UserRepository userRepository;
+    TaskRepository taskRepository;
+    Task task = null;
 
-    private final String taskNotAssignedStrPrefix = " task not assigned for ";
-    private final String taskAlrAssignStrPrefix = " task already assigned for ";
-    private final String taskCreatedStrPrefix = " task creating for ";
-
-    private final String taskChangedStrPrefix = " task changed from ";
-
-    private final String taskUpdatedStrPrefix = " task updated for ";
-
-    private final String taskDeletedStrPrefix = " task deleted for ";
-
-    private Task task;
+    Logger logger = Logger.getLogger(TaskUtilService.class.getName());
 
     public TaskDetails createNewTask(TaskDetails taskDetails, Integer projectId) {
-        if (null == taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndActiveInd(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), findUserId(taskDetails.getAssignedTo()), "Active")) {
+        if (null == taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndActiveInd(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), userUtilService.findUserId(taskDetails.getAssignedTo()), TaskConstants.TASK_IS_ACTIVE)) {
             task = new Task();
             task.setTaskCategory(taskDetails.getTaskCategory());
             task.setTaskDescription(taskDetails.getTaskDescription());
-            task.setActiveInd("Active");
-            task.setAssignedBy(findUserId(taskDetails.getAssignedBy()));
-            task.setAssignedTo(findUserId(taskDetails.getAssignedTo()));
+            task.setActiveInd(TaskConstants.TASK_IS_ACTIVE);
+            task.setAssignedBy(userUtilService.findUserId(taskDetails.getAssignedBy()));
+            task.setAssignedTo(userUtilService.findUserId(taskDetails.getAssignedTo()));
             task.setDueDate(taskDetails.getDueDate());
             task.setFilePath(taskDetails.getFilePath());
             task.setFrequency(taskDetails.getFrequency());
@@ -51,31 +43,31 @@ public class TaskUtilService {
             task.setPriority(taskDetails.getPriority());
             task.setCreateTimestamp(new Timestamp(new Date().getTime()));
             task.setUpdatedTimestamp(new Timestamp(new Date().getTime()));
-            System.out.println(taskDetails.getTaskDescription() + " " + taskCreatedStrPrefix + " " + taskDetails.getAssignedTo());
-            return getResultedDetails(taskRepository.save(task));
+            System.out.println(taskDetails.getTaskDescription() + " " + TaskConstants.TASK_CREATING_FOR + " " + taskDetails.getAssignedTo());
+            return setTaskDetails(taskRepository.save(task));
         }
-        System.out.println(taskDetails.getTaskDescription() + " " + taskAlrAssignStrPrefix + " " + taskDetails.getAssignedTo());
+        System.out.println(taskDetails.getTaskDescription() + " " + TaskConstants.TASK_ALREADY_ASSIGNED_FOR + " " + taskDetails.getAssignedTo());
         return null;
     }
 
     public TaskDetails assignTask(TaskDetails taskDetails, Integer projectId) {
-        task = taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndAssignedByAndActiveInd(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), findUserId(taskDetails.getAssignedToOld()), findUserId(taskDetails.getAssignedBy()), "Active");
+        task = taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndAssignedByAndActiveInd(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), userUtilService.findUserId(taskDetails.getAssignedToOld()), userUtilService.findUserId(taskDetails.getAssignedBy()), TaskConstants.TASK_IS_ACTIVE);
         if (null != task) {
-            if (null == taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndActiveInd(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), findUserId(taskDetails.getAssignedToNew()), "Active")) {
-                task.setAssignedTo(findUserId(taskDetails.getAssignedToNew()));
+            if (null == taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndActiveInd(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), userUtilService.findUserId(taskDetails.getAssignedToNew()), TaskConstants.TASK_IS_ACTIVE)) {
+                task.setAssignedTo(userUtilService.findUserId(taskDetails.getAssignedToNew()));
                 task.setUpdatedTimestamp(new Timestamp(new Date().getTime()));
-                System.out.println(taskDetails.getTaskDescription() + taskChangedStrPrefix + taskDetails.getAssignedToOld() + " to " + taskDetails.getAssignedToNew());
-                return getResultedDetails(taskRepository.save(task));
+                System.out.println(taskDetails.getTaskDescription() + TaskConstants.TASK_CHANGED_FROM + taskDetails.getAssignedToOld() + " to " + taskDetails.getAssignedToNew());
+                return setTaskDetails(taskRepository.save(task));
             }
-            System.out.println(taskDetails.getTaskDescription() + taskAlrAssignStrPrefix + taskDetails.getAssignedToNew());
+            System.out.println(taskDetails.getTaskDescription() + TaskConstants.TASK_ALREADY_ASSIGNED_FOR + taskDetails.getAssignedToNew());
             return null;
         }
-        System.out.println(taskDetails.getTaskDescription() + taskNotAssignedStrPrefix + taskDetails.getAssignedToOld());
+        System.out.println(taskDetails.getTaskDescription() + TaskConstants.TASK_NOT_ASSIGNED_FOR + taskDetails.getAssignedToOld());
         return null;
     }
 
     public TaskDetails updateTask(TaskDetails taskDetails, Integer projectId) {
-        task = taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndAssignedBy(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), findUserId(taskDetails.getAssignedTo()), findUserId(taskDetails.getAssignedBy()));
+        task = taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndAssignedBy(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), userUtilService.findUserId(taskDetails.getAssignedTo()), userUtilService.findUserId(taskDetails.getAssignedBy()));
         if (null != task) {
             task.setTaskCategory((String) getValue(task.getTaskCategory(), taskDetails.getTaskCategory()));
             task.setTaskDescription((String) getValue(task.getTaskDescription(), taskDetails.getTaskDescription()));
@@ -86,66 +78,62 @@ public class TaskUtilService {
             task.setStatus((String) getValue(task.getStatus(), taskDetails.getStatus()));
             task.setUpdatedTimestamp(new Timestamp(new Date().getTime()));
             task.setDueDate((Date) getValue(task.getDueDate(), taskDetails.getDueDate()));
-            System.out.println(taskDetails.getTaskDescription() + taskUpdatedStrPrefix + taskDetails.getAssignedTo());
-            return getResultedDetails(taskRepository.save(task));
+            System.out.println(taskDetails.getTaskDescription() + TaskConstants.TASK_UPDATED_FOR + taskDetails.getAssignedTo());
+            return setTaskDetails(taskRepository.save(task));
         }
-        System.out.println(taskDetails.getTaskDescription() + taskNotAssignedStrPrefix + taskDetails.getAssignedTo());
+        System.out.println(taskDetails.getTaskDescription() + TaskConstants.TASK_NOT_ASSIGNED_FOR + taskDetails.getAssignedTo());
         return null;
     }
 
     public TaskDetails deleteTask(TaskDetails taskDetails, Integer projectId) {
-        task = taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndAssignedBy(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), findUserId(taskDetails.getAssignedTo()), findUserId(taskDetails.getAssignedBy()));
+        task = taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndAssignedBy(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), userUtilService.findUserId(taskDetails.getAssignedTo()), userUtilService.findUserId(taskDetails.getAssignedBy()));
         if (null != task) {
             taskRepository.delete(task);
-            System.out.println(taskDetails.getTaskDescription() + taskDeletedStrPrefix + taskDetails.getAssignedTo());
-            return getResultedDetails(task);
+            System.out.println(taskDetails.getTaskDescription() + TaskConstants.TASK_DELETED_FOR + taskDetails.getAssignedTo());
+            return setTaskDetails(task);
         }
-        System.out.println(taskDetails.getTaskDescription() + taskNotAssignedStrPrefix + taskDetails.getAssignedTo());
+        System.out.println(taskDetails.getTaskDescription() + TaskConstants.TASK_NOT_ASSIGNED_FOR + taskDetails.getAssignedTo());
         return null;
     }
 
     public List<TaskDetails> viewActiveTask(Integer projectId) {
-        return getResultedList(taskRepository.findAllByProjectIdAndActiveInd(projectId, "Active"));
+        return getTaskDetailsList(taskRepository.findAllByProjectIdAndActiveInd(projectId, TaskConstants.TASK_IS_ACTIVE));
     }
 
     public List<TaskDetails> viewAllTask(Integer projectId) {
-        return getResultedList(taskRepository.findAllByProjectId(projectId));
+        return getTaskDetailsList(taskRepository.findAllByProjectId(projectId));
     }
 
     private Object getValue(Object oldValue, Object newValue) {
         return null != newValue ? newValue : oldValue;
     }
 
-    private List<TaskDetails> getResultedList(List<Task> taskList) {
+    private List<TaskDetails> getTaskDetailsList(List<Task> taskList) {
         List<TaskDetails> taskResultList = new ArrayList<>();
-        for (Task task : taskList) {
-            taskResultList.add(getResultedDetails(task));
+        for (Task task1 : taskList) {
+            taskResultList.add(setTaskDetails(task1));
         }
         return taskResultList;
     }
 
-    private TaskDetails getResultedDetails(Task task) {
-        TaskDetails taskDetails = new TaskDetails();
-        taskDetails.setTaskDescription(task.getTaskDescription());
-        taskDetails.setTaskCategory(task.getTaskCategory());
-        taskDetails.setAssignedTo(findUserName(task.getAssignedTo()));
-        taskDetails.setAssignedBy(findUserName(task.getAssignedBy()));
-        taskDetails.setStatus(task.getStatus());
-        taskDetails.setActiveInd(task.getActiveInd());
-        taskDetails.setFilePath(task.getFilePath());
-        taskDetails.setPriority(task.getPriority());
-        taskDetails.setFrequency(task.getFrequency());
-        taskDetails.setRemarks(task.getRemarks());
-        taskDetails.setLoggedDate(task.getLoggedDate());
-        taskDetails.setDueDate(task.getDueDate());
-        return taskDetails;
+    private TaskDetails setTaskDetails(Task task) {
+        if(null!=task) {
+            TaskDetails taskDetails = new TaskDetails();
+            taskDetails.setTaskDescription(task.getTaskDescription());
+            taskDetails.setTaskCategory(task.getTaskCategory());
+            taskDetails.setAssignedTo(userUtilService.findUserName(task.getAssignedTo()));
+            taskDetails.setAssignedBy(userUtilService.findUserName(task.getAssignedBy()));
+            taskDetails.setStatus(task.getStatus());
+            taskDetails.setActiveInd(task.getActiveInd());
+            taskDetails.setFilePath(task.getFilePath());
+            taskDetails.setPriority(task.getPriority());
+            taskDetails.setFrequency(task.getFrequency());
+            taskDetails.setRemarks(task.getRemarks());
+            taskDetails.setLoggedDate(task.getLoggedDate());
+            taskDetails.setDueDate(task.getDueDate());
+            return taskDetails;
+        }
+        return null;
     }
 
-    private int findUserId(String username) {
-        return userRepository.findByUserName(username).getUserId();
-    }
-
-    private String findUserName(int userId) {
-        return userRepository.findByUserId(userId).getUserName();
-    }
 }

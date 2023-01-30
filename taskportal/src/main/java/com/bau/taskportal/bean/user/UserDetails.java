@@ -1,29 +1,13 @@
-package com.bau.taskportal.bean;
+package com.bau.taskportal.bean.user;
 
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Column;
 
-@Entity
-@Table(name = "user")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserDetails {
     private Integer userId;
-
-    @Column(unique = true)
     private String email;
-
     private String userName;
     private String role;
     private Integer projectId;
-
-    public Integer getProjectId() {
-        return projectId;
-    }
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
 
     public Integer getUserId() {
         return userId;
@@ -57,17 +41,11 @@ public class User {
         this.role = role;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return userId == user.userId;
+    public Integer getProjectId() {
+        return projectId;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId);
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
     }
-
 }
