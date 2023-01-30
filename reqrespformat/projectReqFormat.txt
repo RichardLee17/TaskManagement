@@ -1,22 +1,87 @@
 1. uri: /create/project
 	request
 	{
-		"projectName": "zzz",
-		"projectDesc": "latest project",
+		"projectName": "yyy",
+		"projectDesc": "project 1",
 		"assignedFor": "Sadhana",
 		"createdBy": "Princy"
 	}
+	response
+	{
+		"projectId": 100000,
+		"projectName": "yyy",
+		"description": "project 1",
+		"status": "New",
+		"createdBy": "Princy",
+		"assignedFor": "Sadhana",
+		"createdTimestamp": "2023-01-30T08:16:52.983+00:00",
+		"updatedTimestamp": "2023-01-30T08:16:52.983+00:00"
+	}
+	
 2. uri: /assign/project
 	request
+	[
+		{
+			"userId": 6,
+			"email": "ram@gds.ey.com",
+			"userName": "Ram",
+			"role": "user",
+			"projectId": 100000
+		},
+		{
+			"userId": 5,
+			"email": "richard@gds.ey.com",
+			"userName": "Richard",
+			"role": "user",
+			"projectId": 100000
+		}
+	]
+	
+3. uri: /fetch/project
+	request
 	{
-		"projectName": "zzz",
-		"assignedFor":"Sadhana",
-		"teamMembers": [
-			{
-				"username": "Sugandhi"
-			},
-			{
-				"username": "Rajesh"
-			}
-		]
+		"projectName": "yyy",
+		"assignedFor":"Sadhana"
 	}
+	
+	response
+	{
+		"projectId": 100000,
+		"projectName": "yyy",
+		"description": "project 1",
+		"status": "New",
+		"createdBy": "Princy",
+		"assignedFor": "Sadhana",
+		"createdTimestamp": "2023-01-30T08:16:53.000+00:00",
+		"updatedTimestamp": "2023-01-30T08:16:53.000+00:00"
+	}
+
+4. uri: /fetch/all/project
+	request
+	{
+		"assignedFor":"Sadhana"
+	}
+	
+	response
+	[
+		{
+			"projectId": 4,
+			"projectName": "zzz",
+			"description": "latest project",
+			"status": "1",
+			"createdBy": "Princy",
+			"assignedFor": "Sadhana",
+			"createdTimestamp": "2023-01-12T13:46:17.000+00:00",
+			"updatedTimestamp": "2023-01-12T13:46:17.000+00:00"
+		},
+		{
+			"projectId": 100000,
+			"projectName": "yyy",
+			"description": "project 1",
+			"status": "New",
+			"createdBy": "Princy",
+			"assignedFor": "Sadhana",
+			"createdTimestamp": "2023-01-30T08:16:53.000+00:00",
+			"updatedTimestamp": "2023-01-30T08:16:53.000+00:00"
+		}
+	]
