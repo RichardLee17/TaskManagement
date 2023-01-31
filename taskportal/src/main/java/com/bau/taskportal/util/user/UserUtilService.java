@@ -14,19 +14,19 @@ public class UserUtilService {
     @Autowired
     private UserRepository userRepository;
 
-    public int findUserId(String username) {
+    public int findUserId(String username) throws NullPointerException {
         return userRepository.findByUserName(username).getUserId();
     }
 
-    public String findUserName(int userId) {
+    public String findUserName(int userId) throws NullPointerException {
         return userRepository.findByUserId(userId).getUserName();
     }
 
-    public User findUser(String username) {
+    public User findUser(String username) throws NullPointerException {
         return userRepository.findByUserName(username);
     }
 
-    public User saveUserDetails(User user) {
+    public User saveUserDetails(User user) throws NullPointerException {
         return userRepository.save(user);
     }
 

@@ -1,8 +1,9 @@
 package com.bau.taskportal.util.project;
 
-import com.bau.taskportal.bean.user.MemberDetails;
+import com.bau.taskportal.bean.member.MemberDetails;
 import com.bau.taskportal.bean.project.ProjectDetails;
 import com.bau.taskportal.bean.user.UserDetails;
+import com.bau.taskportal.constant.Constants;
 import com.bau.taskportal.entity.Project;
 import com.bau.taskportal.bean.project.RegionClass;
 import com.bau.taskportal.entity.User;
@@ -24,26 +25,23 @@ public class ProjectUtilService {
     @Autowired
     ProjectRepository projectRepository;
 
-    public static final String TASK_IS_NEW = "New";
-
-
-    public void assignManager(String managerUName, ProjectDetails projectDetails) {
+    public void assignManager(String managerUName, ProjectDetails projectDetails) throws NullPointerException {
         User user = userUtilService.findUser(managerUName);
         user.setProjectId(projectDetails.getProjectId());
         userUtilService.saveUserDetails(user);
     }
 
-    public UserDetails assignUser(MemberDetails memberDetails, ProjectDetails projectDetails) {
+    public UserDetails assignUser(MemberDetails memberDetails, ProjectDetails projectDetails) throws NullPointerException {
         User user = userUtilService.findUser(memberDetails.getUsername());
         user.setProjectId(projectDetails.getProjectId());
         return userUtilService.setUserDetails(userUtilService.saveUserDetails(user));
     }
 
-    public ProjectDetails createNewProject(RegionClass regionClass) {
+    public ProjectDetails createNewProject(RegionClass regionClass) throws NullPointerException {
         Project project = new Project();
         project.setProjectName(regionClass.getProjectName());
         project.setDescription(regionClass.getProjectDesc());
-        project.setStatus(TASK_IS_NEW);
+        project.setStatus(Constants.TASK_IS_NEW);
         project.setCreatedTimestamp(new Timestamp(new Date().getTime()));
         project.setUpdatedTimestamp(new Timestamp(new Date().getTime()));
         project.setCreatedBy(userUtilService.findUserId(regionClass.getCreatedBy()));
@@ -52,15 +50,15 @@ public class ProjectUtilService {
     }
 
 
-    public ProjectDetails fetchProject(RegionClass regionClass) {
+    public ProjectDetails fetchProject(RegionClass regionClass) throws NullPointerException {
         return setProjectDetails(projectRepository.findByProjectNameAndAssignedFor(regionClass.getProjectName(), userUtilService.findUserId(regionClass.getAssignedFor())));
     }
 
-    public List<ProjectDetails> fetchAllProject(RegionClass regionClass) {
+    public List<ProjectDetails> fetchAllProject(RegionClass regionClass) throws NullPointerException {
         return getProjectDetailsList(projectRepository.findAllByAssignedFor(userUtilService.findUserId(regionClass.getAssignedFor())));
     }
 
-    public ProjectDetails findProject(String projectName) {
+    public ProjectDetails findProject(String projectName) throws NullPointerException {
         return setProjectDetails(projectRepository.findByProjectName(projectName));
     }
 

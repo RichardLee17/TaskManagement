@@ -1,6 +1,6 @@
 package com.bau.taskportal.bean.project;
 
-import com.bau.taskportal.bean.user.MemberDetails;
+import com.bau.taskportal.bean.member.MemberDetails;
 
 import java.util.List;
 public class RegionClass {

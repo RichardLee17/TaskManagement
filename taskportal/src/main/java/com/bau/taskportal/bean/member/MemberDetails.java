@@ -1,4 +1,4 @@
-package com.bau.taskportal.bean.user;
+package com.bau.taskportal.bean.member;
 
 public class MemberDetails {
 

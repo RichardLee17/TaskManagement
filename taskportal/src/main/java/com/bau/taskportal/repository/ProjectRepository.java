@@ -14,5 +14,4 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
 
     List<Project> findAllByAssignedFor(int assignedFor);
 
-    Project save(Project project);
 }
