@@ -2,7 +2,6 @@ URL: http://localhost:8082/view/user/all/task [POST]
 
 request:
 {
-    "projectName": "zzz",
     "userName": "Sugandhi"
 }
 
@@ -15,7 +14,7 @@ response:
         "assignedToNew": null,
         "assignedTo": "Sugandhi",
         "assignedBy": "Sadhana",
-        "status": "New",
+        "status": "new",
         "activeInd": "Active",
         "filePath": null,
         "priority": "high",

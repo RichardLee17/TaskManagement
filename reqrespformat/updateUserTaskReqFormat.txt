@@ -1,8 +1,18 @@
-URL: http://localhost:8082/view/user/active/task [POST]
+URL: http://localhost:8082/update/user/task [POST]
 
 request:
 {
-    "userName": "Sugandhi"
+    "userName": "Sugandhi",
+    "taskList": [
+        {
+            "taskDescription": "Update Timesheet",
+            "taskCategory": "Mercury Timesheet",
+            "assignedTo": "Sugandhi",
+            "assignedBy": "Sadhana",
+            "status": "closed",
+            "activeInd": "Inactive"
+        }
+    ]
 }
 
 response:
@@ -14,8 +24,8 @@ response:
         "assignedToNew": null,
         "assignedTo": "Sugandhi",
         "assignedBy": "Sadhana",
-        "status": "new",
-        "activeInd": "Active",
+        "status": "closed",
+        "activeInd": "Inactive",
         "filePath": null,
         "priority": "high",
         "frequency": "Weekly",
