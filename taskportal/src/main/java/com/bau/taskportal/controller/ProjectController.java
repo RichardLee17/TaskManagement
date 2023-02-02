@@ -21,23 +21,27 @@ public class ProjectController {
     ProjectUtilService projectUtilService;
 
     private ProjectDetails projectDetails;
+
     Logger logger = Logger.getLogger(ProjectController.class.getName());
 
     @PostMapping("/create/project")
     public ProjectDetails createProject(@RequestBody @NotNull RegionClass regionClass) {
         projectDetails = null;
-        if (null == projectUtilService.findProject(regionClass.getProjectName())) {
+        if (null == projectUtilService.findProjectByName(regionClass.getProjectName())) {
             try {
                 projectDetails = projectUtilService.createNewProject(regionClass);
             } catch (NullPointerException e) {
-                logger.warning(Constants.TASK_WARNING_MSG + e.getMessage());
+                logger.warning(Constants.INTERNAL_ERROR_MSG + e.getMessage());
             }
             try {
                 projectUtilService.assignManager(regionClass.getAssignedFor(), projectDetails);
             } catch (NullPointerException e) {
-                logger.warning(Constants.TASK_WARNING_MSG + e.getMessage());
+                logger.warning(Constants.INTERNAL_ERROR_MSG + e.getMessage());
+                projectDetails = null;
             }
         }
+
+        if (null == projectDetails) logger.warning(Constants.REQUEST_NOT_VALID_MSG);
         return projectDetails;
     }
 
@@ -46,11 +50,12 @@ public class ProjectController {
         List<UserDetails> userDetailsList = new ArrayList<>();
         for (MemberDetails teamMember : regionClass.getTeamMembers()) {
             try {
-                userDetailsList.add(projectUtilService.assignUser(teamMember, projectUtilService.findProject(regionClass.getProjectName())));
+                userDetailsList.add(projectUtilService.assignUser(teamMember, projectUtilService.findProjectByName(regionClass.getProjectName())));
             } catch (NullPointerException e) {
-                logger.warning(Constants.TASK_WARNING_MSG + e.getMessage());
+                logger.warning(Constants.INTERNAL_ERROR_MSG + e.getMessage());
             }
         }
+        if (userDetailsList.isEmpty()) logger.warning(Constants.REQUEST_NOT_VALID_MSG);
         return userDetailsList;
     }
 
@@ -60,8 +65,9 @@ public class ProjectController {
         try {
             projectDetails = projectUtilService.fetchProject(regionClass);
         } catch (NullPointerException e) {
-            logger.warning(Constants.TASK_WARNING_MSG + e.getMessage());
+            logger.warning(Constants.INTERNAL_ERROR_MSG + e.getMessage());
         }
+        if (null == projectDetails) logger.warning(Constants.REQUEST_NOT_VALID_MSG);
         return projectDetails;
     }
 
@@ -71,8 +77,9 @@ public class ProjectController {
         try {
             taskResultList = projectUtilService.fetchAllProject(regionClass);
         } catch (NullPointerException e) {
-            logger.warning(Constants.TASK_WARNING_MSG + e.getMessage());
+            logger.warning(Constants.INTERNAL_ERROR_MSG + e.getMessage());
         }
+        if (taskResultList.isEmpty()) logger.warning(Constants.REQUEST_NOT_VALID_MSG);
         return taskResultList;
     }
 }

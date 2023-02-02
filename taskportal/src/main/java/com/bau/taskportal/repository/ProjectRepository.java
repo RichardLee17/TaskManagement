@@ -10,6 +10,8 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
     Project findByProjectName(String projectName);
 
+    Project findByProjectId(int projectId);
+
     Project findByProjectNameAndAssignedFor(String projectName, int assignedFor);
 
     List<Project> findAllByAssignedFor(int assignedFor);

@@ -4,6 +4,7 @@ import com.bau.taskportal.bean.task.TaskDetails;
 import com.bau.taskportal.constant.Constants;
 import com.bau.taskportal.entity.Task;
 import com.bau.taskportal.repository.TaskRepository;
+import com.bau.taskportal.util.project.ProjectUtilService;
 import com.bau.taskportal.util.user.UserUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ public class TaskUtilService {
 
     @Autowired
     UserUtilService userUtilService;
+    @Autowired
+    ProjectUtilService projectUtilService;
     @Autowired
     TaskRepository taskRepository;
     private Task task = null;
@@ -67,20 +70,22 @@ public class TaskUtilService {
     }
 
     public TaskDetails updateTask(TaskDetails taskDetails, Integer projectId) throws NullPointerException {
-        task = taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndAssignedBy(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), userUtilService.findUserId(taskDetails.getAssignedTo()), userUtilService.findUserId(taskDetails.getAssignedBy()));
-        if (null != task) {
-            task.setTaskCategory((String) getValue(task.getTaskCategory(), taskDetails.getTaskCategory()));
-            task.setTaskDescription((String) getValue(task.getTaskDescription(), taskDetails.getTaskDescription()));
-            task.setPriority((String) getValue(task.getPriority(), taskDetails.getPriority()));
-            task.setActiveInd((String) getValue(task.getActiveInd(), taskDetails.getActiveInd()));
-            task.setFrequency((String) getValue(task.getFrequency(), taskDetails.getFrequency()));
-            task.setRemarks((String) getValue(task.getRemarks(), taskDetails.getRemarks()));
-            task.setFilePath((String) getValue(task.getFilePath(), taskDetails.getFilePath()));
-            task.setStatus((String) getValue(task.getStatus(), taskDetails.getStatus()));
-            task.setUpdatedTimestamp(new Timestamp(new Date().getTime()));
-            task.setDueDate((Date) getValue(task.getDueDate(), taskDetails.getDueDate()));
-            logger.info(taskDetails.getTaskDescription() + Constants.TASK_UPDATED_FOR + taskDetails.getAssignedTo());
-            return setTaskDetails(taskRepository.save(task));
+        if (null != projectUtilService.findProjectById(projectId)) {
+            task = taskRepository.findByProjectIdAndTaskDescriptionAndTaskCategoryAndAssignedToAndAssignedBy(projectId, taskDetails.getTaskDescription(), taskDetails.getTaskCategory(), userUtilService.findUserId(taskDetails.getAssignedTo()), userUtilService.findUserId(taskDetails.getAssignedBy()));
+            if (null != task) {
+                task.setTaskCategory((String) getValue(task.getTaskCategory(), taskDetails.getTaskCategory()));
+                task.setTaskDescription((String) getValue(task.getTaskDescription(), taskDetails.getTaskDescription()));
+                task.setPriority((String) getValue(task.getPriority(), taskDetails.getPriority()));
+                task.setActiveInd((String) getValue(task.getActiveInd(), taskDetails.getActiveInd()));
+                task.setFrequency((String) getValue(task.getFrequency(), taskDetails.getFrequency()));
+                task.setRemarks((String) getValue(task.getRemarks(), taskDetails.getRemarks()));
+                task.setFilePath((String) getValue(task.getFilePath(), taskDetails.getFilePath()));
+                task.setStatus((String) getValue(task.getStatus(), taskDetails.getStatus()));
+                task.setUpdatedTimestamp(new Timestamp(new Date().getTime()));
+                task.setDueDate((Date) getValue(task.getDueDate(), taskDetails.getDueDate()));
+                logger.info(taskDetails.getTaskDescription() + Constants.TASK_UPDATED_FOR + taskDetails.getAssignedTo());
+                return setTaskDetails(taskRepository.save(task));
+            }
         }
         logger.info(taskDetails.getTaskDescription() + Constants.TASK_NOT_ASSIGNED_FOR + taskDetails.getAssignedTo());
         return null;
@@ -102,7 +107,7 @@ public class TaskUtilService {
     }
 
     public List<TaskDetails> viewUserActiveTask(Integer projectId, Integer userId) throws NullPointerException {
-        return getTaskDetailsList(taskRepository.findAllByProjectIdAndAssignedToAndActiveInd(projectId, userId, Constants.TASK_IS_ACTIVE));
+        return null != projectUtilService.findProjectById(projectId) ? getTaskDetailsList(taskRepository.findAllByProjectIdAndAssignedToAndActiveInd(projectId, userId, Constants.TASK_IS_ACTIVE)) : null;
     }
 
     public List<TaskDetails> viewAllTask(Integer projectId) throws NullPointerException {
@@ -110,7 +115,7 @@ public class TaskUtilService {
     }
 
     public List<TaskDetails> viewUserAllTask(Integer projectId, Integer userId) throws NullPointerException {
-        return getTaskDetailsList(taskRepository.findAllByProjectIdAndAssignedTo(projectId, userId));
+        return null != projectUtilService.findProjectById(projectId) ? getTaskDetailsList(taskRepository.findAllByProjectIdAndAssignedTo(projectId, userId)) : null;
     }
 
     private Object getValue(Object oldValue, Object newValue) {
